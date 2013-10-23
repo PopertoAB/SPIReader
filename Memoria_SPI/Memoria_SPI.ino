@@ -1,11 +1,13 @@
 #include <SPI.h>
 
-byte nombre[]={
-  80, 111, 112, 101, 114, 115};
+String command;
+char character;
 
 void setup(){
-  Serial.begin(115200);
-
+  Serial.begin(9600);
+  Serial.print(">");
+  command="";
+  
   SPI.begin();
 
   SPI.setBitOrder(MSBFIRST);
@@ -13,26 +15,39 @@ void setup(){
   SPI.setDataMode(SPI_MODE0);
 }
 
-char mensaje[]={
-  'H', 'o', 'l', 'a', ' ', 'm', 'u', 'n', 'd', 'o', '!'};
-
-int estado = 0;
-byte leido[512];
-int i;
 void loop(){
-  if(estado==0){
-    estado=1;
-    for(i=0; i<11; i++){
-      write_ext_eeprom(i, mensaje[i]);
+  if(Serial.available() > 0){
+    character=Serial.read();
+    Serial.print(character);
+    command.concat(character);
+    
+    if(character=='\r'){
+      procesarComando(command);
+      Serial.print(">");
+      command="";
     }
-    for(i=0; i<512; i++){
-      leido[i]=read_ext_eeprom(i);
-      Serial.print((char)leido[i]);
-      Serial.print(" ");
-      if(i%20==0&&i!=0){
-        Serial.println("");
-      }
+    
+    character='\0';
+  }
+}
+
+void procesarComando(String command){
+  if(command.startsWith("leer")){
+    String memoria=command.substring(
+      command.indexOf(",")+1,
+      command.length());
+    char __memoria[memoria.length()];
+    memoria.toCharArray(__memoria,memoria.length());
+    int memoriaNum=atoi(__memoria);
+    
+    String leido;
+    for(int i=memoriaNum;i<memoriaNum+4;i++){
+      leido.concat((char)read_ext_eeprom(i));
     }
+    
+    Serial.println(leido);
+  }else{
+    Serial.println("No existe comando");
   }
 }
 
@@ -94,4 +109,3 @@ byte read_ext_eeprom(int address){
     return leido;
   }
 }
-
