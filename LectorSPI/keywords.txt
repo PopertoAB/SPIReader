@@ -1,0 +1,4 @@
+Memoria95040 KEYWORD1
+leer KEYWORD2
+escribir KEYWORD2
+ready KEYWORD2
