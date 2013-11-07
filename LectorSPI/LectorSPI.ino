@@ -15,25 +15,22 @@ void setup(){
 
   lcd.begin(16,2);
   pinMode(boton, INPUT_PULLUP);
+
+  lcd.clear();
+  lcd.print("     PinPro     ");
+  lcd.setCursor(0, 1);
+  lcd.print(" Presione boton ");
 }
 
 int estado=0;
+int computadora=-1;
 
 void loop(){
 
   if(digitalRead(boton)==0){
-    delay(50);
-    String leido="";
-    for(int i=164; i<=165; i++){
-      byte b=ext_mem.leer(i);
-      leido.concat(String((b>>4)&0x0f,HEX));
-      leido.concat(String(b&0x0f,HEX));
-    }
-    leido.toUpperCase();
-    lcd.clear();
-    lcd.print("X18 Pin:");
-    lcd.setCursor(0, 1);
-    lcd.print(leido);
+    delay(500);
+    computadora++;
+    imprimirPinLCD();
   }
 
   if(Serial.available() > 0){
@@ -50,6 +47,7 @@ void loop(){
     character='\0';
   }
 
+
   /*
   Serial.println("Iniciando escritura");
    
@@ -60,6 +58,61 @@ void loop(){
    Serial.println("Terminando escritura");
    while(true){};
    */
+}
+
+void imprimirPinLCD(){
+  String leido="";
+  switch(computadora){
+  case 0:
+    for(int i=0xa4; i<=0xa5; i++){
+      byte b=ext_mem.leer(i);
+      leido.concat(String((b>>4)&0x0f,HEX));
+      leido.concat(String(b&0x0f,HEX));
+    }
+    leido.toUpperCase();
+    lcd.clear();
+    lcd.print("X18 Pin:");
+    lcd.setCursor(0, 1);
+    lcd.print(leido);
+    break;
+  case 1:
+    for(int i=0xa4; i<=0xa5; i++){
+      byte b=ext_mem.leer(i);
+      leido.concat(String((b>>4)&0x0f,HEX));
+      leido.concat(String(b&0x0f,HEX));
+    }
+    leido.toUpperCase();
+    lcd.clear();
+    lcd.print("T18 Pin:");
+    lcd.setCursor(0, 1);
+    lcd.print(leido);
+    break;
+  case 2:
+    for(int i=0xa4; i<=0xa5; i++){
+      byte b=ext_mem.leer(i);
+      leido.concat(String((b>>4)&0x0f,HEX));
+      leido.concat(String(b&0x0f,HEX));
+    }
+    leido.toUpperCase();
+    lcd.clear();
+    lcd.print("Chevy Pin:");
+    lcd.setCursor(0, 1);
+    lcd.print(leido);
+    break;
+  case 3:
+    for(int i=0x11; i<=0x12; i++){
+      byte b=ext_mem.leer(i);
+      leido.concat(String((b>>4)&0x0f,HEX));
+      leido.concat(String(b&0x0f,HEX));
+    }
+    leido.toUpperCase();
+    lcd.clear();
+    lcd.print("C18 Pin:");
+    lcd.setCursor(0, 1);
+    lcd.print(leido);
+    computadora=-1;
+    break;
+  }
 }
 
 void procesarComando(String command){
@@ -84,5 +137,3 @@ void procesarComando(String command){
     Serial.println("No existe comando");
   }
 }
-
-
