@@ -6,7 +6,7 @@ String command;
 char character;
 Memoria95040 ext_mem(10);
 int boton = 2;
-LiquidCrystal lcd(14,15,16,17,18,19);
+LiquidCrystal lcd(8,6,5,4,3,2);
 
 void setup(){
   Serial.begin(9600);
