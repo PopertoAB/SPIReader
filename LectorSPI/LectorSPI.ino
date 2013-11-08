@@ -5,7 +5,7 @@
 String command;
 char character;
 Memoria95040 ext_mem(10);
-int boton = 2;
+int boton = 9;
 LiquidCrystal lcd(8,6,5,4,3,2);
 
 void setup(){
